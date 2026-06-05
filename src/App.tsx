@@ -33,7 +33,7 @@ type AppState = "idle" | "listening" | "processing" | "speaking";
 
 interface ChatMessage {
   id: string;
-  sender: "user" | "zoya";
+  sender: "user" | "mj";
   text: string;
 }
 
@@ -47,10 +47,16 @@ declare global {
 export default function App() {
   const [appState, setAppState] = useState<AppState>("idle");
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    const saved = localStorage.getItem("zoya_chat_history");
+    const saved = localStorage.getItem("mj_chat_history") || localStorage.getItem("zoya_chat_history");
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map((msg: any) => ({
+            ...msg,
+            sender: msg.sender === "zoya" ? "mj" : msg.sender
+          }));
+        }
       } catch (e) {
         console.error("Failed to parse chat history", e);
       }
@@ -61,7 +67,7 @@ export default function App() {
 
   useEffect(() => {
     messagesRef.current = messages;
-    localStorage.setItem("zoya_chat_history", JSON.stringify(messages));
+    localStorage.setItem("mj_chat_history", JSON.stringify(messages));
   }, [messages]);
 
   const [isMuted, setIsMuted] = useState(false);
@@ -117,7 +123,7 @@ export default function App() {
 
     if (commandResult.isBrowserAction) {
       responseText = commandResult.action;
-      setMessages((prev) => [...prev, { id: Date.now().toString() + "-z", sender: "zoya", text: responseText }]);
+      setMessages((prev) => [...prev, { id: Date.now().toString() + "-mj", sender: "mj", text: responseText }]);
       
       if (!isMuted) {
         setAppState("speaking");
@@ -137,7 +143,7 @@ export default function App() {
     } else {
       // 2. General Chit-Chat via Gemini
       responseText = await getMjResponse(finalTranscript, messagesRef.current);
-      setMessages((prev) => [...prev, { id: Date.now().toString() + "-z", sender: "zoya", text: responseText }]);
+      setMessages((prev) => [...prev, { id: Date.now().toString() + "-mj", sender: "mj", text: responseText }]);
       
       if (!isMuted) {
         setAppState("speaking");

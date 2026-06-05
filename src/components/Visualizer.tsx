@@ -44,7 +44,7 @@ export default function Visualizer({ state }: VisualizerProps) {
     };
   };
 
-  // JARVIS color palette (Cyan/Blue) with Zoya's personality (Violet/Pink hints)
+  // JARVIS color palette (Cyan/Blue) with MJ's personality (Violet/Pink hints)
   const getTheme = () => {
     switch (state) {
       case "listening": return { color: "rgba(139, 92, 246, 1)", glow: "shadow-violet-500/60", border: "border-violet-400" };

@@ -10,7 +10,7 @@ export function resetMjSession() {
 // For compatibility with any old imports
 export { resetMjSession as resetZoyaSession };
 
-export async function getMjResponse(prompt: string, history: { sender: "user" | "zoya", text: string }[] = []): Promise<string> {
+export async function getMjResponse(prompt: string, history: { sender: "user" | "mj" | "zoya", text: string }[] = []): Promise<string> {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
